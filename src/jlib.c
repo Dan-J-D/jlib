@@ -269,6 +269,97 @@ void jlib_obj_set(jlib_val *obj, char *name, jlib_val val)
 	obj->need_free = 1;
 }
 
+unsigned int jlib_escape_len(char ch)
+{
+	switch (ch)
+	{
+	case '\b':
+	case '\f':
+	case '\n':
+	case '\r':
+	case '\t':
+	case '\\':
+	case '"':
+		return 2;
+	default:
+		return 1;
+	}
+}
+
+unsigned int jlib_escape_str_len(char *str)
+{
+	unsigned int len = 0;
+	for (unsigned int i = 0; str[i] != '\0'; i++)
+		len += jlib_escape_len(str[i]);
+	return len;
+}
+
+char *jlib_escape_str(char *str, char *buf, unsigned int buf_len)
+{
+	for (unsigned int i = 0; str[i] != '\0' && buf_len >= 0; i++)
+	{
+		switch (str[i])
+		{
+		case '\b':
+			if (buf_len < 2)
+				return NULL;
+			*buf++ = '\\';
+			*buf++ = 'b';
+			buf_len -= 2;
+			break;
+		case '\f':
+			if (buf_len < 2)
+				return NULL;
+			*buf++ = '\\';
+			*buf++ = 'f';
+			buf_len -= 2;
+			break;
+		case '\n':
+			if (buf_len < 2)
+				return NULL;
+			*buf++ = '\\';
+			*buf++ = 'n';
+			buf_len -= 2;
+			break;
+		case '\r':
+			if (buf_len < 2)
+				return NULL;
+			*buf++ = '\\';
+			*buf++ = 'r';
+			buf_len -= 2;
+			break;
+		case '\t':
+			if (buf_len < 2)
+				return NULL;
+			*buf++ = '\\';
+			*buf++ = 't';
+			buf_len -= 2;
+			break;
+		case '\\':
+			if (buf_len < 2)
+				return NULL;
+			*buf++ = '\\';
+			*buf++ = '\\';
+			buf_len -= 2;
+			break;
+		case '"':
+			if (buf_len < 2)
+				return NULL;
+			*buf++ = '\\';
+			*buf++ = '"';
+			buf_len -= 2;
+			break;
+		default:
+			if (buf_len < 1)
+				return NULL;
+			*buf++ = str[i];
+			buf_len--;
+			break;
+		}
+	}
+	return buf;
+}
+
 unsigned int jlib_encode_len(jlib_val *val)
 {
 	unsigned int len = 0;
@@ -305,7 +396,7 @@ unsigned int jlib_encode_len(jlib_val *val)
 		break;
 	}
 	case JLIB_TYPE_STRING:
-		len += strlen(val->str) + 2;
+		len += jlib_escape_str_len(val->str) + 2; // '"' + '"'
 		break;
 	case JLIB_TYPE_ARRAY:
 		len++; // '['
@@ -404,10 +495,9 @@ char *jlib_encode(jlib_val *val, char *buf, unsigned int buf_len)
 		if (buf_len < strlen(val->str) + 2)
 			return NULL;
 		*buf++ = '"';
-		strcpy(buf, val->str);
-		buf += strlen(val->str);
+		buf = jlib_escape_str(val->str, buf, buf_len);
 		*buf++ = '"';
-		buf_len -= strlen(val->str) + 2;
+		buf_len -= jlib_escape_str_len(val->str) + 2;
 		break;
 	}
 	case JLIB_TYPE_ARRAY:
@@ -626,7 +716,15 @@ char *jlib_decode(jlib_val *val, char *buf, unsigned int buf_len)
 		char *buf2 = buf;
 		while (*buf2 != '\0' && *buf2 != ',' && *buf2 != '}' && *buf2 != ']')
 			buf2++;
-		char *buf3 = (char *)malloc(buf2 - buf + 1);
+
+		char *buf3 = buf;
+		while (*buf3 == '.' || (*buf3 >= '0' && *buf3 <= '9'))
+			buf3++;
+
+		if (buf3 != buf2)
+			return NULL;
+
+		buf3 = (char *)malloc(buf2 - buf + 1);
 		strncpy(buf3, buf, buf2 - buf);
 		buf3[buf2 - buf] = '\0';
 		if (strchr(buf3, '.') != NULL)
@@ -673,7 +771,17 @@ void jlib_print_val_(jlib_val *val)
 		printf(JLIB_STR("%f"), val->f32);
 		break;
 	case JLIB_TYPE_STRING:
-		printf(JLIB_STR("\"%s\""), val->str);
+		unsigned int len = jlib_escape_str_len(val->str);
+		if (len != strlen(val->str))
+		{
+			char *buf = (char *)malloc(len + 1);
+			buf[len] = '\0';
+			if (jlib_escape_str(val->str, buf, len))
+				printf(JLIB_STR("\"%s\""), buf);
+			free(buf);
+		}
+		else
+			printf(JLIB_STR("\"%s\""), val->str);
 		break;
 	case JLIB_TYPE_ARRAY:
 	{
