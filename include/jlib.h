@@ -1,6 +1,11 @@
 #ifndef JLIB_H_
 #define JLIB_H_
 
+// Config
+// Global Preprocessor JLIB_PRINT to be able to print jlib_val with jlib_print_val()
+#define JLIB_STR(string) string
+// End Config
+
 #define JLIB_TYPE_UNDEFINED 0
 #define JLIB_TYPE_NULL 1
 #define JLIB_TYPE_TRUE 2
@@ -18,7 +23,7 @@
 #define jlib_true ((jlib_val){.type = JLIB_TYPE_TRUE, .need_free = 0})
 #define jlib_int(int) ((jlib_val){.type = JLIB_TYPE_INT, .i32 = int, .need_free = 0})
 #define jlib_float(float) ((jlib_val){.type = JLIB_TYPE_FLOAT, .f32 = float, .need_free = 0})
-#define jlib_str(string) ((jlib_val){.type = JLIB_TYPE_STRING, .str = string, .need_free = 0})
+#define jlib_str(string) ((jlib_val){.type = JLIB_TYPE_STRING, .str = JLIB_STR(string), .need_free = 0})
 #define jlib_arr(...) ((jlib_val){.type = JLIB_TYPE_ARRAY, .arr = (jlib_val[]){__VA_ARGS__, {.type = JLIB_TYPE_END}}, .need_free = 0})
 #define jlib_obj(...) ((jlib_val){.type = JLIB_TYPE_OBJECT, .obj = (jlib_obj[]){__VA_ARGS__, {.name = {.type = JLIB_TYPE_END}}}, .need_free = 0})
 

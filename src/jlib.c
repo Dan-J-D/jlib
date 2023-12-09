@@ -290,28 +290,28 @@ char *jlib_encode(jlib_val *val, char *buf, unsigned int buf_len)
 	case JLIB_TYPE_UNDEFINED:
 		if (buf_len < 9)
 			return NULL;
-		strcpy(buf, "undefined");
+		strcpy(buf, JLIB_STR("undefined"));
 		buf += 9;
 		buf_len -= 9;
 		break;
 	case JLIB_TYPE_NULL:
 		if (buf_len < 4)
 			return NULL;
-		strcpy(buf, "null");
+		strcpy(buf, JLIB_STR("null"));
 		buf += 4;
 		buf_len -= 4;
 		break;
 	case JLIB_TYPE_TRUE:
 		if (buf_len < 4)
 			return NULL;
-		strcpy(buf, "true");
+		strcpy(buf, JLIB_STR("true"));
 		buf += 4;
 		buf_len -= 4;
 		break;
 	case JLIB_TYPE_FALSE:
 		if (buf_len < 5)
 			return NULL;
-		strcpy(buf, "false");
+		strcpy(buf, JLIB_STR("false"));
 		buf += 5;
 		buf_len -= 5;
 		break;
@@ -351,7 +351,7 @@ char *jlib_encode(jlib_val *val, char *buf, unsigned int buf_len)
 		{
 			if (buf_len < 10)
 				return NULL;
-			strcpy(buf, "0.00000000");
+			strcpy(buf, JLIB_STR("0.00000000"));
 			buf += 10;
 			buf_len -= 10;
 		}
@@ -456,28 +456,28 @@ char *jlib_decode(jlib_val *val, char *buf, unsigned int buf_len)
 	switch (*buf)
 	{
 	case 'u':
-		if (buf_len < 9 || strncmp(buf, "undefined", 9) != 0)
+		if (buf_len < 9 || strncmp(buf, JLIB_STR("undefined"), 9) != 0)
 			return NULL;
 		val->type = JLIB_TYPE_UNDEFINED;
 		buf += 9;
 		buf_len -= 9;
 		break;
 	case 'n':
-		if (buf_len < 4 || strncmp(buf, "null", 4) != 0)
+		if (buf_len < 4 || strncmp(buf, JLIB_STR("null"), 4) != 0)
 			return NULL;
 		val->type = JLIB_TYPE_NULL;
 		buf += 4;
 		buf_len -= 4;
 		break;
 	case 't':
-		if (buf_len < 4 || strncmp(buf, "true", 4) != 0)
+		if (buf_len < 4 || strncmp(buf, JLIB_STR("true"), 4) != 0)
 			return NULL;
 		val->type = JLIB_TYPE_TRUE;
 		buf += 4;
 		buf_len -= 4;
 		break;
 	case 'f':
-		if (buf_len < 5 || strncmp(buf, "false", 5) != 0)
+		if (buf_len < 5 || strncmp(buf, JLIB_STR("false"), 5) != 0)
 			return NULL;
 		val->type = JLIB_TYPE_FALSE;
 		buf += 5;
@@ -613,50 +613,50 @@ void jlib_print_val_(jlib_val *val)
 	switch (val->type)
 	{
 	case JLIB_TYPE_UNDEFINED:
-		printf("undefined");
+		printf(JLIB_STR("undefined"));
 		break;
 	case JLIB_TYPE_NULL:
-		printf("null");
+		printf(JLIB_STR("null"));
 		break;
 	case JLIB_TYPE_TRUE:
-		printf("true");
+		printf(JLIB_STR("true"));
 		break;
 	case JLIB_TYPE_FALSE:
-		printf("false");
+		printf(JLIB_STR("false"));
 		break;
 	case JLIB_TYPE_INT:
-		printf("%d", val->i32);
+		printf(JLIB_STR("%d"), val->i32);
 		break;
 	case JLIB_TYPE_FLOAT:
-		printf("%f", val->f32);
+		printf(JLIB_STR("%f"), val->f32);
 		break;
 	case JLIB_TYPE_STRING:
-		printf("\"%s\"", val->str);
+		printf(JLIB_STR("\"%s\""), val->str);
 		break;
 	case JLIB_TYPE_ARRAY:
 	{
-		printf("[");
+		printf(JLIB_STR("["));
 		for (unsigned int i = 0; val->arr[i].type != JLIB_TYPE_END; i++)
 		{
 			if (i != 0)
-				printf(",");
+				printf(JLIB_STR(","));
 			jlib_print_val_(&val->arr[i]);
 		}
-		printf("]");
+		printf(JLIB_STR("]"));
 		break;
 	}
 	case JLIB_TYPE_OBJECT:
 	{
-		printf("{");
+		printf(JLIB_STR("{"));
 		for (unsigned int i = 0; val->obj[i].name.type != JLIB_TYPE_END; i++)
 		{
 			if (i != 0)
-				printf(",");
+				printf(JLIB_STR(","));
 			jlib_print_val_(&val->obj[i].name);
-			printf(":");
+			printf(JLIB_STR(":"));
 			jlib_print_val_(&val->obj[i].val);
 		}
-		printf("}");
+		printf(JLIB_STR("}"));
 		break;
 	}
 	}
@@ -665,6 +665,6 @@ void jlib_print_val_(jlib_val *val)
 void jlib_print_val(jlib_val *val)
 {
 	jlib_print_val_(val);
-	printf("\n");
+	printf(JLIB_STR("\n"));
 }
 #endif
