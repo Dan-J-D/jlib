@@ -9,18 +9,18 @@ This is Test 1 to check for memory leaks.
 
 int main(int argc, char **argv)
 {
-	while (1)
+	while(1)
 	{
 		jlib_val val = jlib_obj(
-				{jlib_str("test123"), jlib_str("test12433")},
-				{jlib_str("test"), jlib_int(23)},
-				{jlib_str("test1"), jlib_float(1.523f)},
-				{jlib_str("test2"), jlib_null},
-				{jlib_str("test3"), jlib_false},
-				{jlib_str("test4"), jlib_true},
-				{jlib_str("test5"), jlib_undefined},
-				{jlib_str("test6"), jlib_arr(jlib_int(25), jlib_int(26))},
-				{jlib_str("test5"), jlib_obj({jlib_str("test"), jlib_int(23)})});
+			{ jlib_str("test123"), jlib_str("test12433") },
+			{ jlib_str("test"), jlib_int(23) },
+			{ jlib_str("test1"), jlib_float(1.523f) },
+			{ jlib_str("test2\b"), jlib_null },
+			{ jlib_str("test3\t"), jlib_false },
+			{ jlib_str("test4\""), jlib_true },
+			{ jlib_str("test5"), jlib_undefined },
+			{ jlib_str("test6"), jlib_arr(jlib_int(25), jlib_int(26)) },
+			{ jlib_str("test5"), jlib_obj({jlib_str("test"), jlib_int(23)}) });
 
 		printf("jlib_print_val(): ");
 		jlib_print_val(&val);
