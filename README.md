@@ -1,10 +1,10 @@
 # JLib
 A Simple C99 Conforming Json Library.
 
-### Build with CMake For Release X64:
+### Build with CMake
 ```bash
-cmake -S src -B build -A x64
-cmake --build build --config Release
+cmake -S src -B build
+cmake --build build
 ```
 
 ### Build with CMakeAuto
