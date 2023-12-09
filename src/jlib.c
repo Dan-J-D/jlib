@@ -227,6 +227,48 @@ void jlib_set_val(jlib_val *val, jlib_val val2)
 	}
 }
 
+void jlib_obj_set(jlib_val *obj, char *name, jlib_val val)
+{
+	unsigned int found = UINT32_MAX;
+	unsigned int len = 0;
+	for (unsigned int i = 0; obj->obj[i].name.type != JLIB_TYPE_END; i++)
+	{
+		if (obj->obj[i].name.type == JLIB_TYPE_STRING)
+		{
+			if (strcmp(obj->obj[i].name.str, name) == 0)
+			{
+				found = i;
+				break;
+			}
+		}
+		len++;
+	}
+
+	if (found != UINT32_MAX)
+	{
+		jlib_delete_val(&obj->obj[found].val);
+		jlib_set_val(&obj->obj[found].val, val);
+		return;
+	}
+
+	jlib_obj *obj2 = (jlib_obj *)malloc(sizeof(jlib_obj) * (len + 2));
+
+	for (unsigned int i = 0; i < len + 1; i++)
+		obj2[i] = obj->obj[i];
+
+	jlib_set_str(&obj2[len].name, name);
+	jlib_set_val(&obj2[len].val, val);
+
+	obj2[len + 1].name.type = JLIB_TYPE_END;
+	obj2[len + 1].val.type = JLIB_TYPE_END;
+
+	if (obj->need_free)
+		free(obj->obj);
+
+	obj->obj = obj2;
+	obj->need_free = 1;
+}
+
 unsigned int jlib_encode_len(jlib_val *val)
 {
 	unsigned int len = 0;
@@ -514,7 +556,7 @@ char *jlib_decode(jlib_val *val, char *buf, unsigned int buf_len)
 				len++;
 			buf2++;
 		}
-		val->arr = (jlib_val *)malloc(sizeof(jlib_val) * (len + 2));
+		val->arr = (jlib_val *)malloc(sizeof(jlib_val) * (len + 1));
 		val->need_free = 1;
 		len = 0;
 		buf2 = buf + 1;
@@ -550,7 +592,7 @@ char *jlib_decode(jlib_val *val, char *buf, unsigned int buf_len)
 				len++;
 			buf2++;
 		}
-		val->obj = (jlib_obj *)malloc(sizeof(jlib_obj) * (len + 2));
+		val->obj = (jlib_obj *)malloc(sizeof(jlib_obj) * (len + 1));
 		val->need_free = 1;
 		len = 0;
 		buf2 = buf + 1;

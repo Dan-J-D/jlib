@@ -61,6 +61,8 @@ void jlib_set_arr(jlib_val *val, jlib_val arr);
 void jlib_set_pbj(jlib_val *val, jlib_obj *obj);
 void jlib_set_val(jlib_val *val, jlib_val val2);
 
+void jlib_obj_set(jlib_val *obj, char *name, jlib_val val);
+
 // not including null terminator
 unsigned int jlib_encode_len(jlib_val *val);
 // returns where buffer ends
