@@ -22,3 +22,8 @@ project(test1)
 add_definitions(-DJLIB_PRINT)
 
 add_executable(test1 test1.c jlib.c)
+
+project(test2)
+add_definitions(-DJLIB_PRINT)
+
+add_executable(test2 test2.c jlib.c)
