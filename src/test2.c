@@ -4,7 +4,7 @@
 #include "jlib.h"
 
 /*
-This is Test 1 to check for memory leaks.
+This is Test 2 to check for memory leaks.
 */
 
 int main(int argc, char **argv)
