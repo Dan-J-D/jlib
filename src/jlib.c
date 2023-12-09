@@ -9,6 +9,9 @@
 #include <stdio.h>
 #endif
 
+#define JLIB_TO_STR_(s) #s
+#define JLIB_TO_STR(s) JLIB_TO_STR_(s)
+
 void jlib_strrev(unsigned char *str)
 {
 	int i;
@@ -224,9 +227,6 @@ void jlib_set_val(jlib_val *val, jlib_val val2)
 	}
 }
 
-#define jlib_encoded_str_(s) #s
-#define jlib_encoded_str(s) jlib_encoded_str_(s)
-
 unsigned int jlib_encode_len(jlib_val *val)
 {
 	unsigned int len = 0;
@@ -246,11 +246,11 @@ unsigned int jlib_encode_len(jlib_val *val)
 		break;
 	case JLIB_TYPE_INT:
 	{
-		char buf[sizeof(jlib_encoded_str(INT32_MAX)) + 1];
-		if (jlib_itoa(val->i32, buf, sizeof(jlib_encoded_str(INT32_MAX)), 10) == 0)
+		char buf[sizeof(JLIB_TO_STR(INT32_MAX)) + 1];
+		if (jlib_itoa(val->i32, buf, sizeof(JLIB_TO_STR(INT32_MAX)), 10) == 0)
 			len += strlen(buf);
 		else
-			len += sizeof(jlib_encoded_str(INT32_MAX));
+			len += sizeof(JLIB_TO_STR(INT32_MAX));
 		break;
 	}
 	case JLIB_TYPE_FLOAT:
@@ -317,8 +317,8 @@ char *jlib_encode(jlib_val *val, char *buf, unsigned int buf_len)
 		break;
 	case JLIB_TYPE_INT:
 	{
-		char buf2[sizeof(jlib_encoded_str(INT32_MAX)) + 1];
-		if (jlib_itoa(val->i32, buf2, sizeof(jlib_encoded_str(INT32_MAX)), 10) == 0)
+		char buf2[sizeof(JLIB_TO_STR(INT32_MAX)) + 1];
+		if (jlib_itoa(val->i32, buf2, sizeof(JLIB_TO_STR(INT32_MAX)), 10) == 0)
 		{
 			if (buf_len < strlen(buf2))
 				return NULL;
@@ -328,11 +328,11 @@ char *jlib_encode(jlib_val *val, char *buf, unsigned int buf_len)
 		}
 		else
 		{
-			if (buf_len < sizeof(jlib_encoded_str(0)))
+			if (buf_len < sizeof(JLIB_TO_STR(0)))
 				return NULL;
-			strcpy(buf, jlib_encoded_str(0));
-			buf += sizeof(jlib_encoded_str(0));
-			buf_len -= sizeof(jlib_encoded_str(0));
+			strcpy(buf, JLIB_TO_STR(0));
+			buf += sizeof(JLIB_TO_STR(0));
+			buf_len -= sizeof(JLIB_TO_STR(0));
 		}
 		break;
 	}
