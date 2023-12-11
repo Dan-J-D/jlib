@@ -1,5 +1,5 @@
 # JLib
-A Simple C99 Conforming Json Library.
+A Simple Pure C99 Conforming Json Library.
 
 ### Build Tests with CMake
 ```bash
