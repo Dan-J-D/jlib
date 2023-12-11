@@ -21,14 +21,14 @@ include_directories(../include/)
 project(test1)
 add_definitions(-DJLIB_PRINT)
 
-add_executable(test1 test1.c jlib.c)
+add_executable(test1 test1.c ../src/jlib.c)
 
 project(test2)
 add_definitions(-DJLIB_PRINT)
 
-add_executable(test2 test2.c jlib.c)
+add_executable(test2 test2.c ../src/jlib.c)
 
 project(test3)
 add_definitions(-DJLIB_PRINT)
 
-add_executable(test3 test3.c jlib.c)
+add_executable(test3 test3.c ../src/jlib.c)

@@ -1,13 +1,13 @@
 # JLib
 A Simple C99 Conforming Json Library.
 
-### Build with CMake
+### Build Tests with CMake
 ```bash
-cmake -S src -B build
+cmake -S tests -B build
 cmake --build build
 ```
 
-### Build with CMakeAuto
+### Build Tests with CMakeAuto
 ```bash
-cmakeauto build
+cmakeauto build -s tests
 ```
