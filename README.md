@@ -11,3 +11,6 @@ cmake --build build
 ```bash
 cmakeauto build -s tests
 ```
+
+## References
+- [RFC 8259](https://datatracker.ietf.org/doc/html/rfc8259) - The JavaScript Object Notation (JSON) Data Interchange Format
